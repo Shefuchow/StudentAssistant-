@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from selenium import webdriver
+#from selenium import webdriver
 import time
 import requests
 
@@ -14,8 +14,9 @@ def checkSeat(url, index):
     return seats
 
 
-def something( dept, class_num):
-    link = f"http://www.buffalo.edu/class-schedule?switch=showcourses&semester=spring&division=UGRD&dept={dept.upper()}"
+def something( class_num):
+    #link = f"http://www.buffalo.edu/class-schedule?switch=showcourses&semester=spring&division=UGRD&dept={dept.upper()}"
+    link = "http://www.buffalo.edu/class-schedule?switch=showcourses&semester=spring&division=UGRD&dept=CSE"
     page = requests.get(link)
     soup = BeautifulSoup(page.content, "html.parser")
     
@@ -23,7 +24,7 @@ def something( dept, class_num):
     tr = body.find_all("tr")
     for td in tr[4:]:
         try:
-            if f"{dept.upper()} {class_num}" in td.a.get_text():
+            if f"{class_num}" in td.a.get_text():
                 data = td.find_all('td', class_='padding')
                 if data[len(data)-6].get_text().strip() == "LEC":
                     
@@ -35,14 +36,15 @@ def something( dept, class_num):
                     print(time)
                     seat = checkSeat(link, index)
                     print(f"Class has {seat} available")
+                    return seat
         except:
             continue
 
-
-dept = input("Enter the department:")
-num = input("Class level:")
-print('\n' * 3)
-something(dept.upper().strip(),num.strip())
+# -- Used to test in command line -------------
+# dept = input("Enter the department:")
+# num = input("Class level:")
+# print('\n' * 3)
+# something(dept.upper().strip(),num.strip())
 
 
 
